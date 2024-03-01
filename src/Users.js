@@ -13,17 +13,50 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Avatar from "@mui/material/Avatar";
 import Link from "@mui/material/Link";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 export default function Users() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
+    UserGet();
+  }, []);
+
+  const UserGet = () => {
     fetch("https://www.melivecode.com/api/users")
       .then((res) => res.json())
       .then((result) => {
         setItems(result);
       });
-  }, []);
+  };
+
+  const UserDelete = (id) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      id: id,
+    });
+
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("https://www.melivecode.com/api/users/delete", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result["message"]);
+        alert(result["message"]);
+        if (result["status"] === "ok") {
+          UserGet();
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -70,7 +103,20 @@ export default function Users() {
                     <TableCell align="right">{row.fname}</TableCell>
                     <TableCell align="right">{row.lname}</TableCell>
                     <TableCell align="right">{row.username}</TableCell>
-                    <TableCell align="center"></TableCell>
+                    <TableCell align="center">
+                      <ButtonGroup
+                        variant="outlined"
+                        aria-label="Basic button group"
+                      >
+                        <Button color="secondary">Edit</Button>
+                        <Button
+                          onClick={() => UserDelete(row.id)}
+                          color="error"
+                        >
+                          Delete
+                        </Button>
+                      </ButtonGroup>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
