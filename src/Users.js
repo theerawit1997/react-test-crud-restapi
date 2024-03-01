@@ -57,6 +57,10 @@ export default function Users() {
       .catch((error) => console.error(error));
   };
 
+  const UserUpdate = id => {
+    window.location = '/update/' + id;
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -108,10 +112,15 @@ export default function Users() {
                         variant="outlined"
                         aria-label="Basic button group"
                       >
-                        <Button color="secondary">Edit</Button>
                         <Button
-                          onClick={() => UserDelete(row.id)}
+                          color="secondary"
+                          onClick={() => UserUpdate(row.id)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
                           color="error"
+                          onClick={() => UserDelete(row.id)}
                         >
                           Delete
                         </Button>
